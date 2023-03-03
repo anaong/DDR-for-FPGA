@@ -1,0 +1,31 @@
+## Project F: FPGA Pong - iCEBreaker Board Constraints (DVI)
+## (C)2023 Will Green, open source hardware released under the MIT License
+## Learn more at https://projectf.io/posts/fpga-pong/
+
+## Board Clock: 12 MHz
+set_frequency  clk_12m_i      12
+set_io -nowarn clk_12m_i      35
+
+## Buttons
+set_io -nowarn btn_rst_i      10
+set_io -nowarn btn_fire_i     19
+set_io -nowarn btn_up_i       18
+set_io -nowarn btn_dn_i       20
+
+## 12-bit DVI Pmod on Pmod 1A/1B
+set_io -nowarn dvi_clk_o      38
+set_io -nowarn dvi_hsync_o    31
+set_io -nowarn dvi_vsync_o    28
+set_io -nowarn dvi_de_o       32
+set_io -nowarn dvi_r_o[0]     48
+set_io -nowarn dvi_r_o[1]      2
+set_io -nowarn dvi_r_o[2]      3
+set_io -nowarn dvi_r_o[3]      4
+set_io -nowarn dvi_g_o[0]     44
+set_io -nowarn dvi_g_o[1]     45
+set_io -nowarn dvi_g_o[2]     46
+set_io -nowarn dvi_g_o[3]     47
+set_io -nowarn dvi_b_o[0]     34
+set_io -nowarn dvi_b_o[1]     36
+set_io -nowarn dvi_b_o[2]     42
+set_io -nowarn dvi_b_o[3]     43
