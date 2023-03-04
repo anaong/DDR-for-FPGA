@@ -150,7 +150,8 @@ module top_ddr (
 
     logic [1:0] arrow_count_l;
     counter_up 
-        #(.WIDTH_P(2))
+        #(.WIDTH_P(2)
+         ,.RESET_VAL(3))
     counter_up_inst
         (.clk_i(clk_pix_l)
         ,.reset_i(1'b0)
