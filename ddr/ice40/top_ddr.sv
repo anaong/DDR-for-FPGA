@@ -62,10 +62,10 @@ module top_ddr (
     // debounce buttons
     logic left_l, up_l, down_l, right_l;
     /* verilator lint_off PINCONNECTEMPTY */
-    debounce deb_left (.clk(clk_pix_l), .in(btn_fire_i), .out(left_l), .ondn(), .onup());
-    debounce deb_up (.clk(clk_pix_l), .in(btn_up_i), .out(up_l), .ondn(), .onup());
-    debounce deb_down (.clk(clk_pix_l), .in(btn_dn_i), .out(down_l), .ondn(), .onup());
-    debounce deb_right (.clk(clk_pix_l), .in(btn_rst_i), .out(right_l), .ondn(), .onup());
+    debounce deb_left (.clk(clk_pix_l), .in(btn_fire_i), .out(), .ondn(), .onup(left_l));
+    debounce deb_up (.clk(clk_pix_l), .in(btn_up_i), .out(), .ondn(), .onup(up_l));
+    debounce deb_down (.clk(clk_pix_l), .in(btn_dn_i), .out(), .ondn(), .onup(down_l));
+    debounce deb_right (.clk(clk_pix_l), .in(btn_rst_i), .out(), .ondn(), .onup(right_l));
     /* verilator lint_on PINCONNECTEMPTY */
 
     //arrow
