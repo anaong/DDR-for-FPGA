@@ -59,10 +59,6 @@ module top_ddr (
     logic frame_l;  // high for one clock tick at the start of vertical blanking
     always_comb frame_l = (sy_l == V_RES && sx_l == 0);
 
-    // scores
-
-    // drawing signals
-
     // debounce buttons
     logic left_l, up_l, down_l, right_l;
     /* verilator lint_off PINCONNECTEMPTY */
@@ -72,13 +68,31 @@ module top_ddr (
     debounce deb_right (.clk(clk_pix_l), .in(btn_rst_i), .out(right_l), .ondn(), .onup());
     /* verilator lint_on PINCONNECTEMPTY */
 
-    // game state
-    //enum {} state_r, state_n;
+    //arrow
+    localparam ARROW_SIZE   = 50;
+    localparam ARROW_GAP    = 15;
+    localparam ARROWX_BEGIN = 197;
+    localparam ARROWY_BEGIN = 480;
+    localparam ARROW_SPEED  = 7;
 
-    // update game state
-    //always_ff @(posedge clk_pix_l) state_r <= state_n;
+    logic arrowl, arrowu, arrowd, arrowr;
+    logic [CORDW-1:0] arrowl_x = ARROWX_BEGIN;
+    logic [CORDW-1:0] arrowl_y = ARROWY_BEGIN;
 
-    // draw the score
+    logic [CORDW-1:0] arrowu_x = arrowl_x + ARROW_SIZE + ARROW_GAP;
+    logic [CORDW-1:0] arrowu_y = ARROWY_BEGIN;
+
+    logic [CORDW-1:0] arrowd_x = arrowu_x + ARROW_SIZE + ARROW_GAP;
+    logic [CORDW-1:0] arrowd_y = ARROWY_BEGIN;
+
+    logic [CORDW-1:0] arrowr_x = arrowd_x + ARROW_SIZE+ ARROW_GAP;
+    logic [CORDW-1:0] arrowr_y = ARROWY_BEGIN;
+    always_comb begin
+        arrowl = (sx >= arrowl_x) && (sx <= arrowl_x + ARROW_SIZE) && (sy >= arrowl_y) && (sy <= arrowl_y + ARROW_SIZE);
+        arrowu = (sx >= arrowu_x) && (sx <= arrowu_x + ARROW_SIZE) && (sy >= arrowu_y) && (sy <= arrowu_y + ARROW_SIZE);
+        arrowd = (sx >= arrowd_x) && (sx <= arrowd_x + ARROW_SIZE) && (sy >= arrowd_y) && (sy <= arrowd_y + ARROW_SIZE);
+        arrowr = (sx >= arrowr_x) && (sx <= arrowr_x + ARROW_SIZE) && (sy >= arrowr_y) && (sy <= arrowr_y + ARROW_SIZE);
+    end
 
     // paint colour
     logic [3:0] paint_r_l, paint_g_l, paint_b_l;
@@ -113,7 +127,7 @@ module top_ddr (
         .D_OUT_1(1'b1)
     );
 
-    //* verilator lint_off UNUSEDPARAM */
-    //* verilator lint_off UNUSEDSIGNAL */
-    //* verilator lint_off UNDRIVEN */
+    /* verilator lint_off UNUSEDPARAM */
+    /* verilator lint_off UNUSEDSIGNAL */
+    /* verilator lint_off UNDRIVEN */
 endmodule
