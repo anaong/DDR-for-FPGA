@@ -94,8 +94,96 @@ module top_ddr (
         arrowr = (sx >= arrowr_x) && (sx <= arrowr_x + ARROW_SIZE) && (sy >= arrowr_y) && (sy <= arrowr_y + ARROW_SIZE);
     end
 
+    logic [0:0] go_l = sig_fire | sig_up | sig_dn;
+    logic [0:0] reset_l = arrowl_y <= 3 | arrowl_y >= 485 |
+                          arrowu_y <= 3 | arrowu_y >= 485 |
+                          arrowd_y <= 3 | arrowd_y >= 485 |
+                          arrowr_y <= 3 | arrowr_y >= 485;
+    
+    enum logic [1:0] {state_wait_s  = 2'b00,
+                      state_count_s = 2'b01,
+                      state_move_s  = 2'b10,
+                      state_judge_s = 2'b11
+                      }state_r, state_n;
+
+    always_comb begin
+        case({state_r, go_l, reset_l})
+            {state_wait_s, 1'b1, 1'b0} : begin
+                state_n = state_count_s;
+            end
+            {state_count_s, 1'b0, 1'b0} : begin
+                state_n = state_move_s;
+            end
+            {state_move_s, 1'b0, 1'b1} : begin
+                state_n = state_judge_s;
+            end
+            {state_judge_s, 1'b0, 1'b0} : begin
+                state_n = state_wait_s;
+            end
+            default : state_n = state_r;
+        endcase
+    end
+    
+    logic [0:0]count_up_l = '0;
+    always_comb begin
+        case(state_r)
+            state_wait_s : begin
+                count_up_l = 1'b0;
+            end
+            state_count_s : begin
+                count_up_l = 1'b1;
+            end
+            state_move_s : begin
+                count_up_l = 1'b0;
+            end
+            state_judge_s : begin
+                count_up_l = 1'b0;
+            end
+        endcase
+    end
+
+    always_ff @(posedge clk_pix) begin
+        state_r <= state_n;
+    end
+
+    logic [1:0] arrow_count_l;
+    counter_up 
+        #(.WIDTH_P(2))
+    counter_up_inst
+        (.clk_i(clk_pix)
+        ,.reset_i(1'b0)
+        ,.up_i(count_up_l)
+        ,.count_o(arrow_count_l)
+        );
+
+    always_ff @(posedge clk_pix) begin
+        if(arrowl_y <= 3 | arrowl_y >= 485 | sig_fire) begin
+            arrowl_y <= ARROWY_BEGIN;
+        end else if (arrowu_y <= 3 | arrowu_y >= 485 | sig_up) begin
+            arrowu_y <= ARROWY_BEGIN;
+        end else if (arrowd_y <= 3 | arrowd_y >= 485 | sig_dn) begin
+            arrowd_y <= ARROWY_BEGIN;
+        end else if (arrowr_y <= 3 | arrowr_y >= 485) begin
+            arrowr_y <= ARROWY_BEGIN;
+        end else if (frame & state_r == state_move_s) begin
+            case(arrow_count_l)
+            2'b00 : arrowl_y <= arrowl_y - ARROW_SPEED;
+            2'b01 : arrowu_y <= arrowu_y - ARROW_SPEED;
+            2'b10 : arrowd_y <= arrowd_y - ARROW_SPEED;
+            2'b11 : arrowr_y <= arrowr_y - ARROW_SPEED;
+            endcase
+        end
+    end
+
     // paint colour
-    logic [3:0] paint_r_l, paint_g_l, paint_b_l;
+    logic [3:0] paint_r, paint_g, paint_b;
+    always_comb begin
+        if (arrowl) {paint_r, paint_g, paint_b} = 12'hFFF;
+        else if (arrowu) {paint_r, paint_g, paint_b} = 12'hFFF;
+        else if (arrowd) {paint_r, paint_g, paint_b} = 12'hFFF;
+        else if (arrowr) {paint_r, paint_g, paint_b} = 12'hFFF;
+        else {paint_r, paint_g, paint_b} = 12'h000;  // background
+    end
 
     // display colour: paint colour but black in blanking interval
     logic [3:0] display_r_l, display_g_l, display_b_l;
