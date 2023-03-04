@@ -1,3 +1,4 @@
+`default_nettype none
 `timescale 1ns / 1ps
 
 module counter_up #(parameter WIDTH_P = 4, parameter RESET_VAL = 0)(

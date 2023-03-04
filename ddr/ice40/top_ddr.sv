@@ -70,121 +70,28 @@ module top_ddr (
     debounce deb_right (.clk(clk_pix_l), .in(btn_rst_i), .out(), .ondn(), .onup(right_l));
     /* verilator lint_on PINCONNECTEMPTY */
 
-    //arrow
-    localparam ARROW_SIZE   = 50;
-    localparam ARROW_GAP    = 15;
-    localparam ARROWX_BEGIN = 197;
-    localparam ARROWY_BEGIN = 480;
-    localparam ARROW_SPEED  = 7;
-
-    logic arrowl, arrowu, arrowd, arrowr;
-    logic [CORDW-1:0] arrowl_x = ARROWX_BEGIN;
-    logic [CORDW-1:0] arrowl_y = ARROWY_BEGIN;
-
-    logic [CORDW-1:0] arrowu_x = arrowl_x + ARROW_SIZE + ARROW_GAP;
-    logic [CORDW-1:0] arrowu_y = ARROWY_BEGIN;
-
-    logic [CORDW-1:0] arrowd_x = arrowu_x + ARROW_SIZE + ARROW_GAP;
-    logic [CORDW-1:0] arrowd_y = ARROWY_BEGIN;
-
-    logic [CORDW-1:0] arrowr_x = arrowd_x + ARROW_SIZE+ ARROW_GAP;
-    logic [CORDW-1:0] arrowr_y = ARROWY_BEGIN;
-    always_comb begin
-        arrowl = (sx_l >= arrowl_x) && (sx_l <= arrowl_x + ARROW_SIZE) && (sy_l >= arrowl_y) && (sy_l <= arrowl_y + ARROW_SIZE);
-        arrowu = (sx_l >= arrowu_x) && (sx_l <= arrowu_x + ARROW_SIZE) && (sy_l >= arrowu_y) && (sy_l <= arrowu_y + ARROW_SIZE);
-        arrowd = (sx_l >= arrowd_x) && (sx_l <= arrowd_x + ARROW_SIZE) && (sy_l >= arrowd_y) && (sy_l <= arrowd_y + ARROW_SIZE);
-        arrowr = (sx_l >= arrowr_x) && (sx_l <= arrowr_x + ARROW_SIZE) && (sy_l >= arrowr_y) && (sy_l <= arrowr_y + ARROW_SIZE);
-    end
-
-    logic [0:0] go_l = left_l | up_l | down_l | right_l;
-    logic [0:0] reset_l = arrowl_y <= 3 | arrowl_y >= 485 |
-                          arrowu_y <= 3 | arrowu_y >= 485 |
-                          arrowd_y <= 3 | arrowd_y >= 485 |
-                          arrowr_y <= 3 | arrowr_y >= 485;
-    
-    enum logic [1:0] {state_wait_s  = 2'b00,
-                      state_count_s = 2'b01,
-                      state_move_s  = 2'b10,
-                      state_judge_s = 2'b11
-                      }state_r, state_n;
-
-    always_comb begin
-        case({state_r, go_l, reset_l})
-            {state_wait_s, 1'b1, 1'b0} : begin
-                state_n = state_count_s;
-            end
-            {state_count_s, 1'b0, 1'b0} : begin
-                state_n = state_move_s;
-            end
-            {state_move_s, 1'b0, 1'b1} : begin
-                state_n = state_judge_s;
-            end
-            {state_judge_s, 1'b0, 1'b0} : begin
-                state_n = state_wait_s;
-            end
-            default : state_n = state_r;
-        endcase
-    end
-    
-    logic [0:0]count_up_l = '0;
-    always_comb begin
-        case(state_r)
-            state_wait_s : begin
-                count_up_l = 1'b0;
-            end
-            state_count_s : begin
-                count_up_l = 1'b1;
-            end
-            state_move_s : begin
-                count_up_l = 1'b0;
-            end
-            state_judge_s : begin
-                count_up_l = 1'b0;
-            end
-        endcase
-    end
-
-    always_ff @(posedge clk_pix_l) begin
-        state_r <= state_n;
-    end
-
-    logic [1:0] arrow_count_l;
-    counter_up 
-        #(.WIDTH_P(2)
-         ,.RESET_VAL(3))
-    counter_up_inst
-        (.clk_i(clk_pix_l)
-        ,.reset_i(1'b0)
-        ,.up_i(count_up_l)
-        ,.count_o(arrow_count_l)
-        );
-
-    always_ff @(posedge clk_pix_l) begin
-        if(arrowl_y <= 3 | arrowl_y >= 485 | left_l) begin
-            arrowl_y <= ARROWY_BEGIN;
-        end else if (arrowu_y <= 3 | arrowu_y >= 485 | up_l) begin
-            arrowu_y <= ARROWY_BEGIN;
-        end else if (arrowd_y <= 3 | arrowd_y >= 485 | down_l) begin
-            arrowd_y <= ARROWY_BEGIN;
-        end else if (arrowr_y <= 3 | arrowr_y >= 485) begin
-            arrowr_y <= ARROWY_BEGIN;
-        end else if (frame_l & state_r == state_move_s) begin
-            case(arrow_count_l)
-            2'b00 : arrowl_y <= arrowl_y - ARROW_SPEED;
-            2'b01 : arrowu_y <= arrowu_y - ARROW_SPEED;
-            2'b10 : arrowd_y <= arrowd_y - ARROW_SPEED;
-            2'b11 : arrowr_y <= arrowr_y - ARROW_SPEED;
-            endcase
-        end
-    end
+    logic [3:0] arrow_l;
+    arrow_logic
+        #(.CORDW(CORDW))
+    arrow_logic_inst
+    (.clk_i(clk_pix_l)
+    ,.sx_i(sx_l)
+    ,.sy_i(sy_l)
+    ,.frame_i(frame_l)
+    ,.btn_left_i(left_l)
+    ,.btn_up_i(up_l)
+    ,.btn_down_i(down_l)
+    ,.btn_right_i(right_l)
+    ,.arrow_o(arrow_l)
+    );
 
     // paint colour
     logic [3:0] paint_r_l, paint_g_l, paint_b_l;
     always_comb begin
-        if (arrowl) {paint_r_l, paint_g_l, paint_b_l} = 12'hFFF;
-        else if (arrowu) {paint_r_l, paint_g_l, paint_b_l} = 12'hFFF;
-        else if (arrowd) {paint_r_l, paint_g_l, paint_b_l} = 12'hFFF;
-        else if (arrowr) {paint_r_l, paint_g_l, paint_b_l} = 12'hFFF;
+        if (arrow_l[3]) {paint_r_l, paint_g_l, paint_b_l} = 12'hFFF;
+        else if (arrow_l[2]) {paint_r_l, paint_g_l, paint_b_l} = 12'hFFF;
+        else if (arrow_l[1]) {paint_r_l, paint_g_l, paint_b_l} = 12'hFFF;
+        else if (arrow_l[0]) {paint_r_l, paint_g_l, paint_b_l} = 12'hFFF;
         else {paint_r_l, paint_g_l, paint_b_l} = 12'h000;  // background
     end
 
