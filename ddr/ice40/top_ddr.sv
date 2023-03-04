@@ -13,8 +13,8 @@ module top_ddr (
     input  wire logic btn_up_i,       // up button
     input  wire logic btn_dn_i,       // down button
     output      logic dvi_clk_o,      // DVI pixel clock
-    output      logic dvi_hsync_o,    // DVI horizontal sync
-    output      logic dvi_vsync_o,    // DVI vertical sync
+    output      logic dvi_hsy_lnc_o,    // DVI horizontal sy_lnc
+    output      logic dvi_vsy_lnc_o,    // DVI vertical sy_lnc
     output      logic dvi_de_o,       // DVI data enable
     output      logic [3:0] dvi_r_o,  // 4-bit DVI red
     output      logic [3:0] dvi_g_o,  // 4-bit DVI green
@@ -38,22 +38,24 @@ module top_ddr (
     );
     /* verilator lint_off PINCONNECTEMPTY */
 
-    // display sync signals and coordinates
+    // display sy_lnc signals and coordinates
     localparam CORDW = 10;  // screen coordinate width in bits
     logic [CORDW-1:0] sx_l, sy_l;
-    logic hsync_l, vsync_l, de_l;
+    logic hsy_lnc_l, vsy_lnc_l, de_l;
     simple_480p display_inst (
         .clk_pix(clk_pix_l),
         .rst_pix(!clk_pix_locked_l),  // wait for clock lock
         .sx(sx_l),
         .sy(sy_l),
-        .hsync(hsync_l),
-        .vsync(vsync_l),
+        .hsync(hsy_lnc_l),
+        .vsync(vsy_lnc_l),
         .de(de_l)
     );
 
     // screen dimensions (must match display_inst)
+    /* verilator lint_off UNUSEDPARAM */
     localparam H_RES = 640;  // horizontal screen resolution
+    /* verilator lint_off UNUSEDPARAM */
     localparam V_RES = 480;  // vertical screen resolution
 
     logic frame_l;  // high for one clock tick at the start of vertical blanking
@@ -88,13 +90,13 @@ module top_ddr (
     logic [CORDW-1:0] arrowr_x = arrowd_x + ARROW_SIZE+ ARROW_GAP;
     logic [CORDW-1:0] arrowr_y = ARROWY_BEGIN;
     always_comb begin
-        arrowl = (sx >= arrowl_x) && (sx <= arrowl_x + ARROW_SIZE) && (sy >= arrowl_y) && (sy <= arrowl_y + ARROW_SIZE);
-        arrowu = (sx >= arrowu_x) && (sx <= arrowu_x + ARROW_SIZE) && (sy >= arrowu_y) && (sy <= arrowu_y + ARROW_SIZE);
-        arrowd = (sx >= arrowd_x) && (sx <= arrowd_x + ARROW_SIZE) && (sy >= arrowd_y) && (sy <= arrowd_y + ARROW_SIZE);
-        arrowr = (sx >= arrowr_x) && (sx <= arrowr_x + ARROW_SIZE) && (sy >= arrowr_y) && (sy <= arrowr_y + ARROW_SIZE);
+        arrowl = (sx_l >= arrowl_x) && (sx_l <= arrowl_x + ARROW_SIZE) && (sy_l >= arrowl_y) && (sy_l <= arrowl_y + ARROW_SIZE);
+        arrowu = (sx_l >= arrowu_x) && (sx_l <= arrowu_x + ARROW_SIZE) && (sy_l >= arrowu_y) && (sy_l <= arrowu_y + ARROW_SIZE);
+        arrowd = (sx_l >= arrowd_x) && (sx_l <= arrowd_x + ARROW_SIZE) && (sy_l >= arrowd_y) && (sy_l <= arrowd_y + ARROW_SIZE);
+        arrowr = (sx_l >= arrowr_x) && (sx_l <= arrowr_x + ARROW_SIZE) && (sy_l >= arrowr_y) && (sy_l <= arrowr_y + ARROW_SIZE);
     end
 
-    logic [0:0] go_l = sig_fire | sig_up | sig_dn;
+    logic [0:0] go_l = left_l | up_l | down_l | right_l;
     logic [0:0] reset_l = arrowl_y <= 3 | arrowl_y >= 485 |
                           arrowu_y <= 3 | arrowu_y >= 485 |
                           arrowd_y <= 3 | arrowd_y >= 485 |
@@ -142,7 +144,7 @@ module top_ddr (
         endcase
     end
 
-    always_ff @(posedge clk_pix) begin
+    always_ff @(posedge clk_pix_l) begin
         state_r <= state_n;
     end
 
@@ -150,22 +152,22 @@ module top_ddr (
     counter_up 
         #(.WIDTH_P(2))
     counter_up_inst
-        (.clk_i(clk_pix)
+        (.clk_i(clk_pix_l)
         ,.reset_i(1'b0)
         ,.up_i(count_up_l)
         ,.count_o(arrow_count_l)
         );
 
-    always_ff @(posedge clk_pix) begin
-        if(arrowl_y <= 3 | arrowl_y >= 485 | sig_fire) begin
+    always_ff @(posedge clk_pix_l) begin
+        if(arrowl_y <= 3 | arrowl_y >= 485 | left_l) begin
             arrowl_y <= ARROWY_BEGIN;
-        end else if (arrowu_y <= 3 | arrowu_y >= 485 | sig_up) begin
+        end else if (arrowu_y <= 3 | arrowu_y >= 485 | up_l) begin
             arrowu_y <= ARROWY_BEGIN;
-        end else if (arrowd_y <= 3 | arrowd_y >= 485 | sig_dn) begin
+        end else if (arrowd_y <= 3 | arrowd_y >= 485 | down_l) begin
             arrowd_y <= ARROWY_BEGIN;
         end else if (arrowr_y <= 3 | arrowr_y >= 485) begin
             arrowr_y <= ARROWY_BEGIN;
-        end else if (frame & state_r == state_move_s) begin
+        end else if (frame_l & state_r == state_move_s) begin
             case(arrow_count_l)
             2'b00 : arrowl_y <= arrowl_y - ARROW_SPEED;
             2'b01 : arrowu_y <= arrowu_y - ARROW_SPEED;
@@ -176,13 +178,13 @@ module top_ddr (
     end
 
     // paint colour
-    logic [3:0] paint_r, paint_g, paint_b;
+    logic [3:0] paint_r_l, paint_g_l, paint_b_l;
     always_comb begin
-        if (arrowl) {paint_r, paint_g, paint_b} = 12'hFFF;
-        else if (arrowu) {paint_r, paint_g, paint_b} = 12'hFFF;
-        else if (arrowd) {paint_r, paint_g, paint_b} = 12'hFFF;
-        else if (arrowr) {paint_r, paint_g, paint_b} = 12'hFFF;
-        else {paint_r, paint_g, paint_b} = 12'h000;  // background
+        if (arrowl) {paint_r_l, paint_g_l, paint_b_l} = 12'hFFF;
+        else if (arrowu) {paint_r_l, paint_g_l, paint_b_l} = 12'hFFF;
+        else if (arrowd) {paint_r_l, paint_g_l, paint_b_l} = 12'hFFF;
+        else if (arrowr) {paint_r_l, paint_g_l, paint_b_l} = 12'hFFF;
+        else {paint_r_l, paint_g_l, paint_b_l} = 12'h000;  // background
     end
 
     // display colour: paint colour but black in blanking interval
@@ -197,9 +199,9 @@ module top_ddr (
     SB_IO #(
         .PIN_TYPE(6'b010100)  // PIN_OUTPUT_REGISTERED
     ) dvi_signal_io [14:0] (
-        .PACKAGE_PIN({dvi_hsync_o, dvi_vsync_o, dvi_de_o, dvi_r_o, dvi_g_o, dvi_b_o}),
+        .PACKAGE_PIN({dvi_hsy_lnc_o, dvi_vsy_lnc_o, dvi_de_o, dvi_r_o, dvi_g_o, dvi_b_o}),
         .OUTPUT_CLK(clk_pix_l),
-        .D_OUT_0({hsync_l, vsync_l, de_l, display_r_l, display_g_l, display_b_l}),
+        .D_OUT_0({hsy_lnc_l, vsy_lnc_l, de_l, display_r_l, display_g_l, display_b_l}),
         /* verilator lint_off PINCONNECTEMPTY */
         .D_OUT_1()
         /* verilator lint_on PINCONNECTEMPTY */
