@@ -20,40 +20,31 @@ module arrow_logic #(parameter CORDW = 10) (
     localparam ARROWY_BEGIN = 450;
     localparam ARROW_SPEED  = 7;
     localparam ARROW_SPACE = ARROW_SIZE + ARROW_GAP;
+    localparam ARROW_COUNT = 4;
 
-    //arrow initial poisition
-    logic arrowl, arrowu, arrowd, arrowr;
-    logic [CORDW-1:0] arrowl_x = ARROWX_BEGIN;
-    logic [CORDW-1:0] arrowl_y;
-
-    logic [CORDW-1:0] arrowu_x = arrowl_x + ARROW_SPACE;
-    logic [CORDW-1:0] arrowu_y;
-
-    logic [CORDW-1:0] arrowd_x = arrowu_x + ARROW_SPACE;
-    logic [CORDW-1:0] arrowd_y;
-
-    logic [CORDW-1:0] arrowr_x = arrowd_x + ARROW_SPACE;
-    logic [CORDW-1:0] arrowr_y;
-
-    //arrow drawing and size
-    always_comb begin
-        arrowl = (sx_i >= arrowl_x) && (sx_i <= arrowl_x + ARROW_SIZE) && (sy_i >= arrowl_y) && (sy_i <= arrowl_y + ARROW_SIZE);
-        arrowu = (sx_i >= arrowu_x) && (sx_i <= arrowu_x + ARROW_SIZE) && (sy_i >= arrowu_y) && (sy_i <= arrowu_y + ARROW_SIZE);
-        arrowd = (sx_i >= arrowd_x) && (sx_i <= arrowd_x + ARROW_SIZE) && (sy_i >= arrowd_y) && (sy_i <= arrowd_y + ARROW_SIZE);
-        arrowr = (sx_i >= arrowr_x) && (sx_i <= arrowr_x + ARROW_SIZE) && (sy_i >= arrowr_y) && (sy_i <= arrowr_y + ARROW_SIZE);
-    end
-
-    assign arrow_o = {arrowl, arrowu, arrowd, arrowr};
+    logic [(CORDW*ARROW_COUNT)-1:0] arrow_y_l;
+    arrow_draw
+        #(.CORDW(CORDW)
+         ,.ARROWX_BEGIN(ARROWX_BEGIN)
+         ,.ARROW_SIZE(ARROW_SIZE)
+         ,.ARROW_COUNT(ARROW_COUNT))
+    arrow_draw_inst
+    (.sx_i(sx_i)
+    ,.sy_i(sy_i)
+    ,.arrow_y_i(arrow_y_l)
+    ,.arrow_o(arrow_o)
+    );
 
     arrow_movement
         #(.CORDW(CORDW)
          ,.ARROWY_BEGIN(ARROWY_BEGIN)
-         ,.ARROW_SPEED(ARROW_SPEED))
+         ,.ARROW_SPEED(ARROW_SPEED)
+         ,.ARROW_COUNT(ARROW_COUNT))
     arrow_movement_inst
     (.clk_i(clk_i)
     ,.frame_i(frame_i)
     ,.launch_i(btn_left_i)
-    ,.arrow_y_o({arrowl_y, arrowu_y, arrowd_y, arrowr_y})
+    ,.arrow_y_o(arrow_y_l)
     );
 
 endmodule
