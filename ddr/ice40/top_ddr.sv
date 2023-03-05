@@ -70,7 +70,8 @@ module top_ddr (
     debounce deb_right (.clk(clk_pix_l), .in(btn_rst_i), .out(), .ondn(), .onup(right_l));
     /* verilator lint_on PINCONNECTEMPTY */
 
-    logic [3:0] arrow_l;
+    logic [3:0] arrow_left_l;
+    logic [3:0] arrow_up_l;
     arrow_logic
         #(.CORDW(CORDW))
     arrow_logic_inst
@@ -82,16 +83,21 @@ module top_ddr (
     ,.btn_up_i(up_l)
     ,.btn_down_i(down_l)
     ,.btn_right_i(right_l)
-    ,.arrow_o(arrow_l)
+    ,.arrow_left_o(arrow_left_l)
+    ,.arrow_up_o(arrow_up_l)
     );
 
     // paint colour
     logic [3:0] paint_r_l, paint_g_l, paint_b_l;
     always_comb begin
-        if (arrow_l[3]) {paint_r_l, paint_g_l, paint_b_l} = 12'hFFF;
-        else if (arrow_l[2]) {paint_r_l, paint_g_l, paint_b_l} = 12'hFFF;
-        else if (arrow_l[1]) {paint_r_l, paint_g_l, paint_b_l} = 12'hFFF;
-        else if (arrow_l[0]) {paint_r_l, paint_g_l, paint_b_l} = 12'hFFF;
+        if (arrow_left_l[3]) {paint_r_l, paint_g_l, paint_b_l} = 12'hFFF;
+        else if (arrow_left_l[2]) {paint_r_l, paint_g_l, paint_b_l} = 12'hFFF;
+        else if (arrow_left_l[1]) {paint_r_l, paint_g_l, paint_b_l} = 12'hFFF;
+        else if (arrow_left_l[0]) {paint_r_l, paint_g_l, paint_b_l} = 12'hFFF;
+        else if (arrow_up_l[3]) {paint_r_l, paint_g_l, paint_b_l} = 12'hFFF;
+        else if (arrow_up_l[2]) {paint_r_l, paint_g_l, paint_b_l} = 12'hFFF;
+        else if (arrow_up_l[1]) {paint_r_l, paint_g_l, paint_b_l} = 12'hFFF;
+        else if (arrow_up_l[0]) {paint_r_l, paint_g_l, paint_b_l} = 12'hFFF;
         else {paint_r_l, paint_g_l, paint_b_l} = 12'h000;  // background
     end
 

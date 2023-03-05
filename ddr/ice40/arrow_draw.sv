@@ -11,10 +11,12 @@ module arrow_draw #(parameter CORDW = 10
     output wire [ARROW_COUNT-1:0] arrow_o
     );
     logic arrow1, arrow2, arrow3, arrow4;
+    /* verilator lint_off WIDTH */
     logic [CORDW-1:0] arrow1_x = ARROWX_BEGIN;
-    logic [CORDW-1:0] arrow2_x = arrow1_x;
-    logic [CORDW-1:0] arrow3_x = arrow2_x;
-    logic [CORDW-1:0] arrow4_x = arrow3_x;
+    logic [CORDW-1:0] arrow2_x = ARROWX_BEGIN;
+    logic [CORDW-1:0] arrow3_x = ARROWX_BEGIN;
+    logic [CORDW-1:0] arrow4_x = ARROWX_BEGIN;
+    /* verilator lint_off WIDTH */
 
     logic [CORDW-1:0] arrow1_y = arrow_y_i[39:30];
     logic [CORDW-1:0] arrow2_y = arrow_y_i[29:20];
