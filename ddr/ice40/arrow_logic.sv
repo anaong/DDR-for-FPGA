@@ -52,10 +52,7 @@ module arrow_logic #(parameter CORDW = 10) (
     arrow_movement_inst
     (.clk_i(clk_i)
     ,.frame_i(frame_i)
-    ,.btn_left_i(btn_left_i)
-    ,.btn_up_i(btn_up_i)
-    ,.btn_down_i(btn_down_i)
-    ,.btn_right_i(btn_right_i)
+    ,.launch_i(btn_left_i)
     ,.arrow_y_o({arrowl_y, arrowu_y, arrowd_y, arrowr_y})
     );
 
