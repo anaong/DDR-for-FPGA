@@ -41,20 +41,22 @@ module arrow_logic #(parameter CORDW = 10) (
     
     assign arrow_o = {arrowl, arrowu, arrowd, arrowr};
 
-    logic [0:0] go_l = btn_left_i | btn_up_i | btn_down_i | btn_right_i;
-    logic [0:0] reset_l = arrowl_y <= 3 | arrowl_y >= 485 |
-                          arrowu_y <= 3 | arrowu_y >= 485 |
-                          arrowd_y <= 3 | arrowd_y >= 485 |
-                          arrowr_y <= 3 | arrowr_y >= 485;
+    logic [0:0] resetl_l = arrowl_y <= 3 | arrowl_y >= 485;
+    logic [0:0] resetu_l = arrowu_y <= 3 | arrowu_y >= 485;
+    logic [0:0] resetd_l = arrowd_y <= 3 | arrowd_y >= 485;
+    logic [0:0] resetr_l = arrowr_y <= 3 | arrowr_y >= 485;
     
     enum logic [1:0] {state_wait_s  = 2'b00,
                       state_count_s = 2'b01,
                       state_move_s  = 2'b10,
                       state_judge_s = 2'b11
-                      }state_r, state_n;
+                     }state_r, state_n
+                     ,state_ru, state_nu
+                     ,state_rd, state_nd
+                     ,state_rr, state_nr;
 
     always_comb begin
-        case({state_r, go_l, reset_l})
+        case({state_r, btn_left_i, resetl_l})
             {state_wait_s, 1'b1, 1'b0} : begin
                 state_n = state_count_s;
             end
@@ -70,55 +72,120 @@ module arrow_logic #(parameter CORDW = 10) (
             default : state_n = state_r;
         endcase
     end
-    
-    logic [0:0]count_up_l = '0;
+
     always_comb begin
-        case(state_r)
-            state_wait_s : begin
-                count_up_l = 1'b0;
+        case({state_ru, btn_up_i, resetu_l})
+            {state_wait_s, 1'b1, 1'b0} : begin
+                state_nu = state_count_s;
             end
-            state_count_s : begin
-                count_up_l = 1'b1;
+            {state_count_s, 1'b0, 1'b0} : begin
+                state_nu = state_move_s;
             end
-            state_move_s : begin
-                count_up_l = 1'b0;
+            {state_move_s, 1'b0, 1'b1} : begin
+                state_nu = state_judge_s;
             end
-            state_judge_s : begin
-                count_up_l = 1'b0;
+            {state_judge_s, 1'b0, 1'b0} : begin
+                state_nu = state_wait_s;
             end
+            default : state_nu = state_ru;
+        endcase
+    end
+
+    always_comb begin
+        case({state_rd, btn_down_i, resetd_l})
+            {state_wait_s, 1'b1, 1'b0} : begin
+                state_nd = state_count_s;
+            end
+            {state_count_s, 1'b0, 1'b0} : begin
+                state_nd = state_move_s;
+            end
+            {state_move_s, 1'b0, 1'b1} : begin
+                state_nd = state_judge_s;
+            end
+            {state_judge_s, 1'b0, 1'b0} : begin
+                state_nd = state_wait_s;
+            end
+            default : state_nd = state_rd;
+        endcase
+    end
+
+    always_comb begin
+        case({state_rr, btn_up_i | btn_right_i, resetr_l})
+            {state_wait_s, 1'b1, 1'b0} : begin
+                state_nr = state_count_s;
+            end
+            {state_count_s, 1'b0, 1'b0} : begin
+                state_nr = state_move_s;
+            end
+            {state_move_s, 1'b0, 1'b1} : begin
+                state_nr = state_judge_s;
+            end
+            {state_judge_s, 1'b0, 1'b0} : begin
+                state_nr = state_wait_s;
+            end
+            default : state_nr = state_rr;
         endcase
     end
 
     always_ff @(posedge clk_i) begin
         state_r <= state_n;
+        state_ru <= state_nu;
+        state_rd <= state_nd;
+        state_rr <= state_nr;
+    end
+    
+    logic [3:0]count_up_l = '0;
+    always_comb begin
+        count_up_l[0] = (state_r == state_move_s) ? 1'b1 : 1'b0;
+        count_up_l[1] = (state_ru == state_move_s) ? 1'b1 : 1'b0;
+        count_up_l[2] = (state_rd == state_move_s) ? 1'b1 : 1'b0;
+        count_up_l[3] = (state_rr == state_move_s) ? 1'b1 : 1'b0;
     end
 
-    logic [1:0] arrow_count_l;
-    counter_up 
-        #(.WIDTH_P(2)
-         ,.RESET_VAL(3))
-    counter_up_inst
-        (.clk_i(clk_i)
-        ,.reset_i(1'b0)
-        ,.up_i(count_up_l)
-        ,.count_o(arrow_count_l)
-        );
-
+    //left arrow
     always_ff @(posedge clk_i) begin
-        if(arrowl_y <= 3 | arrowl_y >= 485 | btn_left_i) begin
+        if(arrowl_y <= 3 | arrowl_y >= 485) begin
             arrowl_y <= ARROWY_BEGIN;
-        end else if (arrowu_y <= 3 | arrowu_y >= 485 | btn_up_i) begin
-            arrowu_y <= ARROWY_BEGIN;
-        end else if (arrowd_y <= 3 | arrowd_y >= 485 | btn_down_i) begin
-            arrowd_y <= ARROWY_BEGIN;
-        end else if (arrowr_y <= 3 | arrowr_y >= 485 | btn_right_i) begin
-            arrowr_y <= ARROWY_BEGIN;
         end else if (frame_i & state_r == state_move_s) begin
-            case(arrow_count_l)
-            2'b00 : arrowl_y <= arrowl_y - ARROW_SPEED;
-            2'b01 : arrowu_y <= arrowu_y - ARROW_SPEED;
-            2'b10 : arrowd_y <= arrowd_y - ARROW_SPEED;
-            2'b11 : arrowr_y <= arrowr_y - ARROW_SPEED;
+            case(count_up_l[0])
+                1'b1: arrowl_y <= arrowl_y - ARROW_SPEED;
+                default : arrowl_y <= ARROWY_BEGIN;
+            endcase
+        end
+    end
+
+    //up arrow
+    always_ff @(posedge clk_i) begin
+        if(arrowu_y <= 3 | arrowu_y >= 485) begin
+            arrowu_y <= ARROWY_BEGIN;
+        end else if (frame_i & state_ru == state_move_s) begin
+            case(count_up_l[1])
+                1'b1: arrowu_y <= arrowu_y - ARROW_SPEED;
+                default : arrowu_y <= arrowu_y;
+            endcase
+        end
+    end
+
+    //down arrow
+    always_ff @(posedge clk_i) begin
+        if(arrowd_y <= 3 | arrowd_y >= 485) begin
+            arrowd_y <= ARROWY_BEGIN;
+        end else if (frame_i & state_rd == state_move_s) begin
+            case(count_up_l[2])
+                1'b1: arrowd_y <= arrowd_y - ARROW_SPEED;
+                default : arrowd_y <= arrowd_y;
+            endcase
+        end
+    end
+
+    //right arrow
+    always_ff @(posedge clk_i) begin
+        if(arrowr_y <= 3 | arrowr_y >= 485) begin
+            arrowr_y <= ARROWY_BEGIN;
+        end else if (frame_i & state_rr == state_move_s) begin
+            case(count_up_l[3])
+                1'b1: arrowr_y <= arrowr_y - ARROW_SPEED;
+                default : arrowr_y <= arrowr_y;
             endcase
         end
     end
