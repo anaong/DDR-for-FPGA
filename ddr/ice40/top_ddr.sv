@@ -72,6 +72,7 @@ module top_ddr (
 
     logic [3:0] arrow_left_l;
     logic [3:0] arrow_up_l;
+    logic [3:0] arrow_down_l;
     arrow_logic
         #(.CORDW(CORDW))
     arrow_logic_inst
@@ -85,6 +86,7 @@ module top_ddr (
     ,.btn_right_i(right_l)
     ,.arrow_left_o(arrow_left_l)
     ,.arrow_up_o(arrow_up_l)
+    ,.arrow_down_o(arrow_down_l)
     );
 
     // paint colour
@@ -98,6 +100,10 @@ module top_ddr (
         else if (arrow_up_l[2]) {paint_r_l, paint_g_l, paint_b_l} = 12'hFFF;
         else if (arrow_up_l[1]) {paint_r_l, paint_g_l, paint_b_l} = 12'hFFF;
         else if (arrow_up_l[0]) {paint_r_l, paint_g_l, paint_b_l} = 12'hFFF;
+        else if (arrow_down_l[3]) {paint_r_l, paint_g_l, paint_b_l} = 12'hFFF;
+        else if (arrow_down_l[2]) {paint_r_l, paint_g_l, paint_b_l} = 12'hFFF;
+        else if (arrow_down_l[1]) {paint_r_l, paint_g_l, paint_b_l} = 12'hFFF;
+        else if (arrow_down_l[0]) {paint_r_l, paint_g_l, paint_b_l} = 12'hFFF;
         else {paint_r_l, paint_g_l, paint_b_l} = 12'h000;  // background
     end
 
