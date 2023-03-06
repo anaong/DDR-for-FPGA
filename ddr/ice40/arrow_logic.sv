@@ -1,7 +1,8 @@
 `default_nettype none
 `timescale 1ns / 1ps
 
-module arrow_logic #(parameter CORDW = 10) (
+module arrow_logic #(parameter CORDW = 10
+                    ,parameter ARROW_COUNT = 4) (
     input  wire [0:0] clk_i,
     input  wire [CORDW-1:0] sx_i,
     input  wire [CORDW-1:0] sy_i,
@@ -20,13 +21,26 @@ module arrow_logic #(parameter CORDW = 10) (
     localparam ARROW_SIZE           = 50;
     localparam ARROW_GAP            = 10;
     localparam ARROW_SPACE          = ARROW_SIZE + ARROW_GAP;
-    localparam ARROWX_LEFT_BEGIN    = 197;
+    localparam ARROWX_LEFT_BEGIN    = (640 - (ARROW_SIZE * 4 + ARROW_GAP * 3)) / 2;
     localparam ARROWX_UP_BEGIN      = ARROWX_LEFT_BEGIN + ARROW_SPACE;
     localparam ARROWX_DOWN_BEGIN    = ARROWX_UP_BEGIN + ARROW_SPACE;
     localparam ARROWX_RIGHT_BEGIN   = ARROWX_DOWN_BEGIN + ARROW_SPACE;
     localparam ARROWY_BEGIN         = 450;
-    localparam ARROW_SPEED          = 7;
-    localparam ARROW_COUNT          = 4;
+    localparam ARROW_SPEED          = 10;
+
+    logic [0:0] quarter_l;
+    logic [0:0] eigth_l;
+    logic [0:0] sixteenth_l;
+    logic [0:0] tick_l;
+    timing
+        #()
+    timing_inst
+    (.clk_i(clk_i)
+    ,.quarter_o(quarter_l)
+    ,.eigth_o(eigth_l)
+    ,.sixteenth_o(sixteenth_l)
+    ,.tick_o(tick_l)
+    );
 
     logic [(CORDW*ARROW_COUNT)-1:0] arrow_left_y_l;
     arrow_draw
@@ -47,8 +61,8 @@ module arrow_logic #(parameter CORDW = 10) (
          ,.ARROW_COUNT(ARROW_COUNT))
     arrow_movement_left
     (.clk_i(clk_i)
-    ,.frame_i(frame_i)
-    ,.launch_i(btn_left_i)
+    ,.frame_i(tick_l)
+    ,.launch_i(quarter_l)
     ,.arrow_y_o(arrow_left_y_l)
     );
 
@@ -71,8 +85,8 @@ module arrow_logic #(parameter CORDW = 10) (
          ,.ARROW_COUNT(ARROW_COUNT))
     arrow_movement_up
     (.clk_i(clk_i)
-    ,.frame_i(frame_i)
-    ,.launch_i(btn_up_i)
+    ,.frame_i(tick_l)
+    ,.launch_i(eigth_l)
     ,.arrow_y_o(arrow_up_y_l)
     );
 
@@ -95,8 +109,8 @@ module arrow_logic #(parameter CORDW = 10) (
          ,.ARROW_COUNT(ARROW_COUNT))
     arrow_movement_down
     (.clk_i(clk_i)
-    ,.frame_i(frame_i)
-    ,.launch_i(btn_down_i)
+    ,.frame_i(tick_l)
+    ,.launch_i(/*sixteenth_l*/)
     ,.arrow_y_o(arrow_down_y_l)
     );
 
@@ -119,7 +133,7 @@ module arrow_logic #(parameter CORDW = 10) (
          ,.ARROW_COUNT(ARROW_COUNT))
     arrow_movement_right
     (.clk_i(clk_i)
-    ,.frame_i(frame_i)
+    ,.frame_i(tick_l)
     ,.launch_i(btn_right_i)
     ,.arrow_y_o(arrow_right_y_l)
     );
