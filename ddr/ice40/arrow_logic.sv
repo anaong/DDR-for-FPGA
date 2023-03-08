@@ -10,6 +10,8 @@ module arrow_logic #(parameter CORDW = 10) (
     input  wire [0:0] btn_up_i,
     input  wire [0:0] btn_down_i,
     input  wire [0:0] btn_right_i,
+    input  wire [3:0] arrows_i,
+    input  wire [3:0] timing_i,
     output wire [3:0] arrow_left_o,
     output wire [3:0] arrow_up_o,
     output wire [3:0] arrow_down_o,
@@ -25,7 +27,7 @@ module arrow_logic #(parameter CORDW = 10) (
     localparam ARROWX_DOWN_BEGIN    = ARROWX_UP_BEGIN + ARROW_SPACE;
     localparam ARROWX_RIGHT_BEGIN   = ARROWX_DOWN_BEGIN + ARROW_SPACE;
     localparam ARROWY_BEGIN         = 450;
-    localparam ARROW_SPEED          = 2;
+    localparam ARROW_SPEED          = 5;
     localparam ARROW_COUNT          = 4;
 
     //** in comments means to do
@@ -66,6 +68,15 @@ module arrow_logic #(parameter CORDW = 10) (
 
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    //takes data from the chart.hex file and launches arrows with the correct timing
+    wire [0:0] launch_left_w  = arrows_i[3] & ((quarter_w & timing_i[2]) | (eigth_w & timing_i[3]) | (sixteenth_w & timing_i == '1));
+    wire [0:0] launch_up_w    = arrows_i[2] & ((quarter_w & timing_i[2]) | (eigth_w & timing_i[3]) | (sixteenth_w & timing_i == '1));
+    wire [0:0] launch_down_w  = arrows_i[1] & ((quarter_w & timing_i[2]) | (eigth_w & timing_i[3]) | (sixteenth_w & timing_i == '1));
+    wire [0:0] launch_right_w = arrows_i[0] & ((quarter_w & timing_i[2]) | (eigth_w & timing_i[3]) | (sixteenth_w & timing_i == '1));
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////
     //a set of 4 left arrows
     //controls:
     //  drawing
@@ -93,7 +104,7 @@ module arrow_logic #(parameter CORDW = 10) (
     arrow_movement_left
     (.clk_i(clk_i)
     ,.frame_i(tick_w)
-    ,.launch_i(btn_down_i/*quarter_w*/)
+    ,.launch_i(launch_left_w)
     ,.btn_i(btn_left_i)
     ,.arrow_y_o(arrow_left_y_l)
     ,.judge_o(left_judge_w)
@@ -128,7 +139,7 @@ module arrow_logic #(parameter CORDW = 10) (
     arrow_movement_up
     (.clk_i(clk_i)
     ,.frame_i(tick_w)
-    ,.launch_i(btn_right_i/*eigth_w*/)
+    ,.launch_i(launch_up_w)
     ,.btn_i(btn_up_i)
     ,.arrow_y_o(arrow_up_y_l)
     ,.judge_o(up_judge_w)
@@ -163,7 +174,7 @@ module arrow_logic #(parameter CORDW = 10) (
     arrow_movement_down
     (.clk_i(clk_i)
     ,.frame_i(tick_w)
-    ,.launch_i(btn_left_i/*/sixteenth_w*/)
+    ,.launch_i(launch_down_w)
     ,.btn_i(btn_down_i)
     ,.arrow_y_o(arrow_down_y_l)
     ,.judge_o(down_judge_w)
@@ -198,7 +209,7 @@ module arrow_logic #(parameter CORDW = 10) (
     arrow_movement_right
     (.clk_i(clk_i)
     ,.frame_i(tick_w)
-    ,.launch_i(btn_up_i)
+    ,.launch_i(launch_right_w)
     ,.btn_i(btn_right_i)
     ,.arrow_y_o(arrow_right_y_l)
     ,.judge_o(right_judge_w)
