@@ -8,11 +8,10 @@ module timing #() (
     output wire [0:0] sixteenth_o,
     output wire [0:0] tick_o
     );
-    //default bpm 60 = 6300000
-    //change bpm here
-    //equation: 6300000/(60/BPM)
-    //calculate the divisor and replace
-    localparam SIM_SEC = 6300000/1;
+    //default bpm 60
+    //change bpm here by replacing the number
+    //equation: 6300000*60/BPM
+    localparam SIM_SEC = 6300000*60/60;
 
     //IMPORTANT
     //************************************************************
