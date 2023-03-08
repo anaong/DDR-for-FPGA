@@ -10,7 +10,8 @@ module arrow_movement #(parameter CORDW = 10
     input  wire [0:0] launch_i,
     input  wire [0:0] btn_i,
     output wire [(CORDW*ARROW_COUNT)-1:0] arrow_y_o,
-    output wire [3:0] judge_o
+    output wire [3:0] judge_o,
+    output wire [0:0] next_o
     );
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////
     //y position for all 4 arrows
@@ -152,6 +153,8 @@ module arrow_movement #(parameter CORDW = 10
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////
     //state machine outputs
     //state_judge_s : gets the y position of the arrow when the button was pressed
+    //state_count_s : tells ram to go to next line in chart.hex
+    assign next_o = state_r1 == state_count_s | state_r2 == state_count_s | state_r3 == state_count_s | state_r4 == state_count_s;
     always_comb begin
         //arrow 1
         case(state_r1)

@@ -23,7 +23,6 @@ module chart #() (
         #()
     ram_1r1w_sync_inst
     (.clk_i(clk_i)
-    ,.reset_i(1'b0)
     ,.wr_valid_i(1'b0)
     ,.wr_data_i(0)
     ,.wr_addr_i(0)

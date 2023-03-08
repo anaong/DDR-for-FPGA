@@ -16,7 +16,8 @@ module arrow_logic #(parameter CORDW = 10) (
     output wire [3:0] arrow_up_o,
     output wire [3:0] arrow_down_o,
     output wire [3:0] arrow_right_o,
-    output wire [0:0] life_bar_o
+    output wire [0:0] life_bar_o,
+    output wire [0:0] next_o
     );
     //arrow wire parameters
     localparam ARROW_SIZE           = 50;
@@ -73,6 +74,9 @@ module arrow_logic #(parameter CORDW = 10) (
     wire [0:0] launch_up_w    = arrows_i[2] & ((quarter_w & timing_i[2]) | (eigth_w & timing_i[3]) | (sixteenth_w & timing_i == '1));
     wire [0:0] launch_down_w  = arrows_i[1] & ((quarter_w & timing_i[2]) | (eigth_w & timing_i[3]) | (sixteenth_w & timing_i == '1));
     wire [0:0] launch_right_w = arrows_i[0] & ((quarter_w & timing_i[2]) | (eigth_w & timing_i[3]) | (sixteenth_w & timing_i == '1));
+    //tells the ram when to go to next line in chart.hex
+    wire [3:0] next_w;
+    assign next_o = next_w[3] | next_w[2] | next_w[1] | next_w[0];
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
@@ -108,6 +112,7 @@ module arrow_logic #(parameter CORDW = 10) (
     ,.btn_i(btn_left_i)
     ,.arrow_y_o(arrow_left_y_l)
     ,.judge_o(left_judge_w)
+    ,.next_o(next_w[3])
     );
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -143,6 +148,7 @@ module arrow_logic #(parameter CORDW = 10) (
     ,.btn_i(btn_up_i)
     ,.arrow_y_o(arrow_up_y_l)
     ,.judge_o(up_judge_w)
+    ,.next_o(next_w[2])
     );
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -178,6 +184,7 @@ module arrow_logic #(parameter CORDW = 10) (
     ,.btn_i(btn_down_i)
     ,.arrow_y_o(arrow_down_y_l)
     ,.judge_o(down_judge_w)
+    ,.next_o(next_w[1])
     );
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -213,6 +220,7 @@ module arrow_logic #(parameter CORDW = 10) (
     ,.btn_i(btn_right_i)
     ,.arrow_y_o(arrow_right_y_l)
     ,.judge_o(right_judge_w)
+    ,.next_o(next_w[0])
     );
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////
 

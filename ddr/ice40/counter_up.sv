@@ -1,7 +1,8 @@
 `default_nettype none
 `timescale 1ns / 1ps
 
-module counter_up #(parameter WIDTH_P = 4, parameter RESET_VAL = 0)(
+module counter_up #(parameter WIDTH_P = 4,
+                    parameter RESET_VAL = 0)(
     input  wire [0:0] clk_i,
     input  wire [0:0] reset_i,
     input  wire [0:0] up_i,

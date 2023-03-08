@@ -61,6 +61,18 @@ module top_ddr (
     logic frame_l;  // high for one clock tick at the start of vertical blanking
     always_comb frame_l = (sy_l == V_RES && sx_l == 0);
 
+    wire [3:0] arrow_w;
+    wire [3:0] timing_w;
+    wire [0:0] next_w;
+    chart
+        #()
+    chart_inst
+    (.clk_i(clk_pix_l)
+    ,.next_i(next_w)
+    ,.arrows_o(arrow_w)
+    ,.timing_o(timing_w)
+    );
+
     // debounce buttons
     logic left_l, up_l, down_l, right_l;
     /* verilator lint_off PINCONNECTEMPTY */
@@ -86,11 +98,14 @@ module top_ddr (
     ,.btn_up_i(up_l)
     ,.btn_down_i(down_l)
     ,.btn_right_i(right_l)
+    ,.arrows_i(arrow_w)
+    ,.timing_i(timing_w)
     ,.arrow_left_o(arrow_left_l)
     ,.arrow_up_o(arrow_up_l)
     ,.arrow_down_o(arrow_down_l)
     ,.arrow_right_o(arrow_right_l)
     ,.life_bar_o(life_bar_l)
+    ,.next_o(next_w)
     );
 
     // paint colour
