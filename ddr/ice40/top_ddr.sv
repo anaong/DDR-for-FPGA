@@ -10,8 +10,12 @@ module top_ddr (
     input  wire logic clk_12m,      // 12 MHz clock
     input  wire logic btn_rst,      // reset button
     input  wire logic btn_fire,     // fire button
-    input  wire logic btn_up,       // up button
-    input  wire logic btn_dn,       // down button
+    //input  wire logic btn_up,       // up button
+    //input  wire logic btn_dn,       // down button
+    input  wire       btn_left_i,   //left button from external button
+    input  wire       btn_up_i,     //up button from external button
+    input  wire       btn_down_i,   //down button from external button
+    input  wire       btn_right_i,  //right button from external button
     output      logic dvi_clk,      // DVI pixel clock
     output      logic dvi_hsync,    // DVI horizontal sync
     output      logic dvi_vsync,    // DVI vertical sync
@@ -60,18 +64,19 @@ module top_ddr (
         #()
     chart_inst
     (.clk_i(clk_pix)
-    ,.next_i(next_w)
+    ,.next_i(fire_l)
     ,.arrows_o(arrow_w)
     ,.timing_o(timing_w)
     );
 
     // debounce buttons
-    logic left_l, up_l, right_l, down_l;
+    logic fire_l, left_l, up_l, right_l, down_l;
     /* verilator lint_off PINCONNECTEMPTY */
-    debounce deb_left (.clk(clk_pix), .in(btn_fire), .out(), .ondn(), .onup(left_l));
-    debounce deb_up (.clk(clk_pix), .in(btn_up), .out(), .ondn(), .onup(up_l));
-    debounce deb_down (.clk(clk_pix), .in(btn_dn), .out(), .ondn(), .onup(down_l));
-    debounce deb_right (.clk(clk_pix), .in(btn_rst), .out(), .ondn(), .onup(right_l));
+    debounce deb_fire (.clk(clk_pix), .in(btn_fire), .out(), .ondn(), .onup(fire_l));
+    debounce deb_left (.clk(clk_pix), .in(btn_left_i), .out(), .ondn(), .onup(left_l));
+    debounce deb_up (.clk(clk_pix), .in(btn_up_i), .out(), .ondn(), .onup(up_l));
+    debounce deb_down (.clk(clk_pix), .in(btn_down_i), .out(), .ondn(), .onup(down_l));
+    debounce deb_right (.clk(clk_pix), .in(btn_right_i), .out(), .ondn(), .onup(right_l));
     /* verilator lint_on PINCONNECTEMPTY */
 
     logic [2:0] arrow_left_l;

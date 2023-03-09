@@ -86,7 +86,7 @@ module arrow_logic #(parameter CORDW = 10) (
     arrow_movement_left
     (.clk_i(clk_i)
     ,.frame_i(frame_i)
-    ,.launch_i(launch_left_w | btn_left_i)
+    ,.launch_i(launch_left_w)
     ,.btn_i(btn_left_i)
     ,.arrow_y_o(arrow_left_y_l)
     ,.next_o(next_w[3])

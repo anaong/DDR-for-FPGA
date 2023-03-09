@@ -8,15 +8,15 @@ set_io -nowarn clk_12m      35
 
 ## Buttons
 set_io -nowarn btn_rst      10
-set_io -nowarn btn_fire     19
-set_io -nowarn btn_up       18
-set_io -nowarn btn_dn       20
+set_io -nowarn btn_fire     20
+##set_io -nowarn btn_up     18
+##set_io -nowarn btn_dn     19
 
 ## 12-bit DVI Pmod on Pmod 1A/1B
 set_io -nowarn dvi_clk      38
 set_io -nowarn dvi_hsync    31
 set_io -nowarn dvi_vsync    28
-set_io -nowarn dvi_de      32
+set_io -nowarn dvi_de       32
 set_io -nowarn dvi_r[0]     48
 set_io -nowarn dvi_r[1]      2
 set_io -nowarn dvi_r[2]      3
@@ -29,3 +29,9 @@ set_io -nowarn dvi_b[0]     34
 set_io -nowarn dvi_b[1]     36
 set_io -nowarn dvi_b[2]     42
 set_io -nowarn dvi_b[3]     43
+
+##External Buttons on Pmod 2
+set_io -nowarn btn_left_i   27
+set_io -nowarn btn_up_i     25
+set_io -nowarn btn_down_i   21
+set_io -nowarn btn_right_i  19
