@@ -19,14 +19,10 @@ module chart #() (
     ,.count_o(rd_addr_w)
     );
 
-    ram_1r1w_sync
+    rom
         #()
-    ram_1r1w_sync_inst
-    (.clk_i(clk_i)
-    ,.wr_valid_i(1'b0)
-    ,.wr_data_i(0)
-    ,.wr_addr_i(0)
-    ,.rd_addr_i(rd_addr_w)
+    rom_inst
+    (.rd_addr_i(rd_addr_w)
     ,.rd_data_o({arrows_o, timing_o})
     );
 

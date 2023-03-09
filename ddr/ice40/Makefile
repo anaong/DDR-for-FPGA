@@ -13,6 +13,13 @@ ADD_SRC += ${PATH_LIB}/clock/ice40/clock_480p.sv
 ADD_SRC += ${PATH_LIB}/essential/debounce.sv
 ADD_SRC += ../simple_480p.sv
 ADD_SRC += ../simple_score.sv
+ADD_SRC += arrow_logic.sv
+ADD_SRC += chart.sv
+ADD_SRC += rom.sv
+ADD_SRC += counter_up.sv
+ADD_SRC += arrow_movement.sv
+ADD_SRC += arrow_draw.sv
+ADD_SRC += timing.sv
 
 ddr: ddr.rpt ddr.bin
 

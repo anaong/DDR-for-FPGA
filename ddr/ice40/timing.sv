@@ -5,8 +5,8 @@ module timing #() (
     input  wire [0:0] clk_i,
     output wire [0:0] quarter_o,
     output wire [0:0] eigth_o,
-    output wire [0:0] sixteenth_o,
-    output wire [0:0] tick_o
+    output wire [0:0] sixteenth_o
+    // output wire [0:0] tick_o
     );
     //default bpm 60
     //change bpm here by replacing the number
@@ -27,13 +27,10 @@ module timing #() (
     localparam QUARTER_TIME = SIM_SEC;
     localparam EIGTH_TIME = QUARTER_TIME / 2;
     localparam SIXTEENTH_TIME = QUARTER_TIME / 8;
-
-    localparam TICK = 105000;
-
+    
     logic [35:0] counter_quarter_l = 1;
     logic [35:0] counter_eigth_l = 1;
     logic [35:0] counter_sixteenth_l = 1;
-    logic [16:0] counter_tick_l = 1;
     always_ff @(posedge clk_i) begin
         //counts the quarter note
         if(counter_quarter_l == QUARTER_TIME) begin
@@ -55,19 +52,11 @@ module timing #() (
         end else begin
             counter_sixteenth_l <= counter_sixteenth_l + 1;
         end
-
-        //counts the tick
-        if(counter_tick_l == TICK) begin
-            counter_tick_l <= 1;
-        end else begin
-            counter_tick_l <= counter_tick_l + 1;
-        end
     end
 
     logic [0:0] quarter_l;
     logic [0:0] eigth_l;
     logic [0:0] sixteenth_l;
-    logic [0:0] tick_l;
     always_comb begin
         //quarter note high
         if(counter_quarter_l == QUARTER_TIME) begin
@@ -89,17 +78,9 @@ module timing #() (
         end else begin
             sixteenth_l = 1'b0;
         end
-
-        //tick high
-        if (counter_tick_l == TICK) begin
-            tick_l = 1'b1;
-        end else begin
-            tick_l = 1'b0;
-        end
     end
 
     assign quarter_o = quarter_l;
     assign eigth_o = eigth_l;
     assign sixteenth_o = sixteenth_l;
-    assign tick_o = tick_l;
 endmodule
