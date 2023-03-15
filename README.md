@@ -12,8 +12,8 @@ The features that were implemented are
 More info down below on unimplemented features and how to read and make charts.  
 
 Special thanks to Will Green and his Project F design and tutorials.
-His Pong implementation was used as a skeleton for my game and helped me understand how to display graphics through the DVI Pmod.
-** LINK: ** https://github.com/projf/projf-explore  
+His Pong implementation was used as a skeleton for my game and helped me understand how to display graphics through the DVI Pmod.  
+**LINK:** https://github.com/projf/projf-explore  
 
 # Structure  
 
