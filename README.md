@@ -1,5 +1,5 @@
 # Intro  
-This final project was created for a the CSE 125 class in UCSC taught by Dustin Richmond.
+This final project was created for the CSE 125 class in UCSC taught by Dustin Richmond.
 This recreates the Konami game Dance Dance Revolution(DDR) on an FPGA.
 The FPGA used for this project is the iCEBreaker FPGA.  
 
