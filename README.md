@@ -73,6 +73,9 @@ To implement on the fpga run the command below after building
 ```shell
 iceprog ddr.bin
 ```
+**Controls**  
+TODO
+
 ## Simulator
 To build the simulator, run the commands below  
 ```shell
@@ -83,5 +86,26 @@ To run the simulator, run the command below after building
 ```shell
 ./obj_dir/ddr
 ```
+**Controls**
+* D - Left Arrow / Leftmost Square
+* F - Up Arrow / Middle Left Square
+* J - Down Arrow / Middle Right Square
+* K - Right Arrow / Rightmost Square
 
 # Testing
+Includes 3 folders with modules you can test
+* chart.sv
+* counter_up.sv
+* rom.sv  
+
+cd into the folder of the module you want to test.  
+Then run the command below for each module you want to test  
+```shell
+make test
+```
+
+# Others
+## Charting Instructions  
+TODO
+## Removed Features  
+TODO
