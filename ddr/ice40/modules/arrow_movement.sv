@@ -1,3 +1,5 @@
+//State machine to indicate when the arrow moves and resets
+
 `default_nettype none
 `timescale 1ns / 1ps
 

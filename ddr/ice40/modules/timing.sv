@@ -1,3 +1,6 @@
+//Calculates the timing of sheet music notes
+//Has 1/4 note, 1/8 note, and 1/16 note
+
 `default_nettype none
 `timescale 1ns / 1ps
 
@@ -6,7 +9,6 @@ module timing #() (
     output wire [0:0] quarter_o,
     output wire [0:0] eigth_o,
     output wire [0:0] sixteenth_o
-    // output wire [0:0] tick_o
     );
     //default bpm 60
     //change bpm here by replacing the number

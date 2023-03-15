@@ -1,3 +1,10 @@
+//This deals with all of the arrow logic
+//Arrow movement
+//Arrow Drawing
+//Timing from sheet music notes to seconds
+//Arrow launching
+//Arrow pressing
+
 `default_nettype none
 `timescale 1ns / 1ps
 /* verilator lint_off UNUSEDSIGNAL */
