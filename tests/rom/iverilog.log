@@ -1,0 +1,2 @@
+ERROR: rom.sv:15: $readmemh's second argument must be a memory.
+Current System Time is: 02:48:18 PM--03/14/2023

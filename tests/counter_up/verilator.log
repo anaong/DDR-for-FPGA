@@ -1,0 +1,46 @@
+TOP.testbench.cg with cycle_time_p          10
+
+///////////////////////////////////////
+***************************************
+TESTING TESTING TESTING TESTING TESTING
+***************************************
+///////////////////////////////////////
+
+BEGIN TEST
+__________ ___________  _______________________________
+\______   \\_   _____/ /   _____/\_   _____/\__    ___/
+ |       _/ |    __)_  \_____  \  |    __)_   |    |   
+ |    |   \ |        \ /        \ |        \  |    |  0->1 time =         10
+ |____|_  //_______  //_______  //_______  /  |____|   
+ ASYNC  \/         \/         \/         \/            
+__________ ___________  _______________________________
+\______   \\_   _____/ /   _____/\_   _____/\__    ___/
+ |       _/ |    __)_  \_____  \  |    __)_   |    |   
+ |    |   \ |        \ /        \ |        \  |    |  1->0 time =        110
+ |____|_  //_______  //_______  //_______  /  |____|   
+ ASYNC  \/         \/         \/         \/            
+At Posedge           0: correct_count_o = 0001, reset_i = 0 
+At Posedge           1: correct_count_o = 0010, reset_i = 0 
+At Posedge           2: correct_count_o = 0011, reset_i = 0 
+At Posedge           3: correct_count_o = 0100, reset_i = 0 
+At Posedge           4: correct_count_o = 0101, reset_i = 0 
+At Posedge           5: correct_count_o = 0110, reset_i = 0 
+At Posedge           6: correct_count_o = 0111, reset_i = 0 
+At Posedge           7: correct_count_o = 1000, reset_i = 0 
+At Posedge           8: correct_count_o = 1001, reset_i = 0 
+At Posedge           9: correct_count_o = 1010, reset_i = 0 
+At Posedge          10: correct_count_o = 1011, reset_i = 0 
+At Posedge          11: correct_count_o = 1100, reset_i = 0 
+At Posedge          12: correct_count_o = 1101, reset_i = 0 
+At Posedge          13: correct_count_o = 1110, reset_i = 0 
+At Posedge          14: correct_count_o = 1111, reset_i = 0 
+At Posedge          15: correct_count_o = 0000, reset_i = 0 
+- testbench.sv:79: Verilog $finish
+Simulation time is               270000
+[0;32m    ____  ___   __________[0m
+[0;32m   / __ \/   | / ___/ ___/[0m
+[0;32m  / /_/ / /| | \__ \__  [0m
+[0;32m / ____/ ___ |___/ /__/ / [0m
+[0;32m/_/   /_/  |_/____/____/  [0m
+
+Simulation Succeeded!
