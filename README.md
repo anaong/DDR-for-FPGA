@@ -64,7 +64,24 @@ brew install verilator sdl2
 ```
 
 ## iCEBreaker
-
+To build on the FPGA, run the commands below  
+```shell
+cd DDR-for-FPGS/ddr/ice40
+make ddr
+```
+To implement on the fpga run the command below after building
+```shell
+iceprog ddr.bin
+```
 ## Simulator
+To build the simulator, run the commands below  
+```shell
+cd DDR-for-FPGA/ddr/sim
+make ddr
+```
+To run the simulator, run the command below after building
+```shell
+./obj_dir/ddr
+```
 
 # Testing
