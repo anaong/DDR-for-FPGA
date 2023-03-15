@@ -33,6 +33,10 @@ This folder is a library from Will Green's Project F and includes the files for 
 This folder has all the file needed to run tests on certain modules.  
 
 # Cloning
+To clone the repository, copy and paste the text below on command line
+```shell
+git clone git@github.com:anaong/DDR-for-FPGA.git
+```
 
 # Building
 
