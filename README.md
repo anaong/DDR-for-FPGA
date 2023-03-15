@@ -1,2 +1,15 @@
-CSE x25 Project  
-Making DDR for the FPGA  
+# Intro  
+
+# Structure  
+
+# Cloning
+
+# Building
+
+## Requirements
+
+## iCEBreaker
+
+## Simulator
+
+# Testing
