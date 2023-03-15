@@ -16,7 +16,7 @@ His Pong implementation was used as a skeleton for my game and helped me underst
 **LINK:** https://github.com/projf/projf-explore  
 
 # Structure  
-### ddr
+## ddr
 This folder includes the game.
 It can be run on the iCEBreaker FPGA or simulated through a computer.  
 It has lint.sh to run the linter.  
@@ -26,10 +26,10 @@ The modules folder is all the modules needed for the game logic from arrow movem
 #### sim
 This folder is has all the files needed to simulate the game on your computer.  
 
-### lib
+## lib
 This folder is a library from Will Green's Project F and includes the files for the clock and debouncer.  
 
-### tests
+## tests
 This folder has all the file needed to run tests on certain modules.  
 
 # Cloning
