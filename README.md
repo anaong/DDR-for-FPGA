@@ -1,5 +1,5 @@
 # Intro  
-This final project was created for the CSE 125 class in UCSC taught by Dustin Richmond.
+This final project was created for the CSE 125 class at UCSC taught by Dustin Richmond.
 This recreates the Konami game Dance Dance Revolution(DDR) on an FPGA.
 The FPGA used for this project is the iCEBreaker FPGA.  
 
@@ -52,7 +52,7 @@ For the simulation you need 3 things
 * Verilator
 * SDL  
 
-For Linux (Debian/Ubuntu) run the commands below on command line
+For Linux (Debian/Ubuntu) run the commands below on command line.
 ```shell
 sudo apt install build-essential
 sudo apt install verilator libsdl2-dev
@@ -99,7 +99,7 @@ Includes 3 folders with modules you can test
 * rom.sv  
 
 cd into the folder of the module you want to test.  
-Then run the command below for each module you want to test  
+Then run the command below for each module you want to test.  
 ```shell
 make test
 ```
