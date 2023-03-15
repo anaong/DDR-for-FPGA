@@ -2,8 +2,8 @@
 `timescale 1ns / 1ps
 
 module rom #(parameter [31:0] width_p = 8
-                      ,parameter [31:0] depth_p = 6
-                      ,parameter  filename_p = "chart.hex") (
+            ,parameter [31:0] depth_p = 8
+            ,parameter  filename_p = "chart.hex") (
     input [$clog2(depth_p) - 1 : 0] rd_addr_i,
     output [width_p-1:0] rd_data_o
   );
