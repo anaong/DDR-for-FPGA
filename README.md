@@ -74,7 +74,12 @@ To implement on the fpga run the command below after building
 iceprog ddr.bin
 ```
 **Controls**  
-TODO
+There are 2 ways to play. You can use the buttons on the FPGA or use external buttons/a pad.  
+#### **FPGA**  
+UBUTTON - Left Arrow / Leftmost Square  
+Button 1 - Up Arrow / Middle Left Square  
+Button 2 - Down Arrow / Middle Right Square  
+Button 3 - Right Arrow / Rightmost Square  
 
 ## Simulator
 To build the simulator, run the commands below  
@@ -106,6 +111,34 @@ make test
 
 # Others
 ## Charting Instructions  
-TODO
+The file chart.hex is where you can create your own charts.
+Each line consists of a pair of hex values where the upper 4 bits are the arrow position and the lower 4 bits are the timing of the arrows.  
+**Arrows**  
+Each bit represents an arrow
+{left, up, down, right}.  
+For example, if you want the left and right arrow to appear, the bits have to be 1001 or 9 in hex.  
+**Timing**  
+The timing is determined by the decimal value of the hex value. There are 3 possible note values which are 1/4, 1/8, and 1/16 notes.  
+4 is quarter note  
+8 is eigth note  
+F is sixteenth note  
+**Example**  
+If you want to do a staircase pattern with each step being a 1/4 note appart, the hex file would look like this:  
+```
+84  
+44  
+24  
+14  
+24  
+44  
+84  
+```
 ## Removed Features  
-TODO
+Due to clock timing having to be 25.2 Mhz for the display, some features were removed to meet the timing. Below are the features that are missing.  
+* Colored arrows to show the note timing
+* 1 less arrow for each direction (originally there was 4 arrows)
+* Judge system that would rate how good your timing is
+* Life bar
+* Point system  
+
+Having all these feautures reduced the max frequency of the clock to 15.9 Mhz.
