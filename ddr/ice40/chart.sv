@@ -1,7 +1,7 @@
 //Displays the chart from chart.hex into the game
 //Takes hex value
-//Left 8 bits is which arrows to launch
-//Right 8 bits is when arrows will launch
+//Left 4 bits is which arrows to launch
+//Right 4 bits is when arrows will launch
 
 `default_nettype none
 `timescale 1ns / 1ps
