@@ -5,7 +5,7 @@
 `default_nettype none
 `timescale 1ns / 1ps
 
-module top_pong #(parameter CORDW=10) (    // coordinate width
+module top_ddr #(parameter CORDW=10) (    // coordinate width
     input  wire clk_pix,             // pixel clock
     input  wire sim_rst,             // sim reset
     input  wire btn_fire,            // fire button
@@ -37,7 +37,7 @@ module top_pong #(parameter CORDW=10) (    // coordinate width
     );
 
     // screen dimensions (must match display_inst)
-    localparam H_RES = 640;  // horizontal screen resolution
+    // localparam H_RES = 640;  // horizontal screen resolution
     localparam V_RES = 480;  // vertical screen resolution
 
     logic frame;  // high for one clock tick at the start of vertical blanking
@@ -50,7 +50,7 @@ module top_pong #(parameter CORDW=10) (    // coordinate width
         #()
     chart_inst
     (.clk_i(clk_pix)
-    ,.next_i(sig_fire)
+    ,.next_i(next_w)
     ,.arrows_o(arrows_w)
     ,.timing_o(timing_w)
     );
