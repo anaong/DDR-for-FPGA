@@ -13,7 +13,7 @@ module timing #() (
     //default bpm 60
     //change bpm here by replacing the number
     //equation: 6300000*60/BPM
-    localparam SIM_SEC = 6300000*60/50;
+    localparam SIM_SEC = 25600000*60/50;
 
     //IMPORTANT
     //************************************************************

@@ -6,11 +6,11 @@
 set_frequency  clk_12m      12
 set_io -nowarn clk_12m      35
 
-## Buttons
+## Buttons No External Buttons or Pad
 set_io -nowarn btn_rst      10
 set_io -nowarn btn_fire     20
-##set_io -nowarn btn_up     18
-##set_io -nowarn btn_dn     19
+set_io -nowarn btn_up       18
+set_io -nowarn btn_dn       19
 
 ## 12-bit DVI Pmod on Pmod 1A/1B
 set_io -nowarn dvi_clk      38
@@ -31,7 +31,7 @@ set_io -nowarn dvi_b[2]     42
 set_io -nowarn dvi_b[3]     43
 
 ##External Buttons on Pmod 2
-set_io -nowarn btn_left_i   27
-set_io -nowarn btn_up_i     25
-set_io -nowarn btn_down_i   21
-set_io -nowarn btn_right_i  19
+##set_io -nowarn btn_left_i   27
+##set_io -nowarn btn_up_i     25
+##set_io -nowarn btn_down_i   26
+##set_io -nowarn btn_right_i  23

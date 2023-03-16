@@ -10,12 +10,14 @@ module top_ddr (
     input  wire logic clk_12m,      // 12 MHz clock
     input  wire logic btn_rst,      // reset button
     input  wire logic btn_fire,     // fire button
-    //input  wire logic btn_up,       // up button
-    //input  wire logic btn_dn,       // down button
-    input  wire       btn_left_i,   //left button from external button
-    input  wire       btn_up_i,     //up button from external button
-    input  wire       btn_down_i,   //down button from external button
-    input  wire       btn_right_i,  //right button from external button
+    //uncomment next 2 input wires if using fpga buttons
+    input  wire logic btn_up,       // up button
+    input  wire logic btn_dn,       // down button
+    //uncomment next 4 input wires if using external buttons or pad
+    // input  wire       btn_left_i,   //left button from external button
+    // input  wire       btn_up_i,     //up button from external button
+    // input  wire       btn_down_i,   //down button from external button
+    // input  wire       btn_right_i,  //right button from external button
     output      logic dvi_clk,      // DVI pixel clock
     output      logic dvi_hsync,    // DVI horizontal sync
     output      logic dvi_vsync,    // DVI vertical sync
@@ -31,7 +33,7 @@ module top_ddr (
     logic clk_pix_locked;
     clock_480p clock_pix_inst (
        .clk_12m,
-       .rst(btn_rst),
+       .rst(btn_rst & 1'b0),
        .clk_pix,
        .clk_pix_locked
     );
@@ -70,13 +72,26 @@ module top_ddr (
     );
 
     // debounce buttons
-    logic fire_l, left_l, up_l, right_l, down_l;
+    logic [0:0] fire_l;
+    logic [0:0] left_l, up_l, right_l, down_l;
+
+    //uncomment if using fpga buttons as controller
     /* verilator lint_off PINCONNECTEMPTY */
-    debounce deb_fire (.clk(clk_pix), .in(btn_fire), .out(), .ondn(), .onup(fire_l));
-    debounce deb_left (.clk(clk_pix), .in(btn_left_i), .out(), .ondn(), .onup(left_l));
-    debounce deb_up (.clk(clk_pix), .in(btn_up_i), .out(), .ondn(), .onup(up_l));
-    debounce deb_down (.clk(clk_pix), .in(btn_down_i), .out(), .ondn(), .onup(down_l));
-    debounce deb_right (.clk(clk_pix), .in(btn_right_i), .out(), .ondn(), .onup(right_l));
+    debounce deb_left (.clk(clk_pix), .in(btn_rst), .out(), .ondn(), .onup(left_l));
+    debounce deb_up (.clk(clk_pix), .in(btn_fire), .out(), .ondn(), .onup(up_l));
+    debounce deb_down (.clk(clk_pix), .in(btn_up), .out(), .ondn(), .onup(down_l));
+    debounce deb_right (.clk(clk_pix), .in(btn_dn), .out(), .ondn(), .onup(right_l));
+    assign fire_l = left_l & up_l & down_l & right_l;
+    /* verilator lint_off PINCONNECTEMPTY */
+
+    //uncomment if using external buttons or pad
+    /* verilator lint_off PINCONNECTEMPTY */
+    // debounce deb_fire (.clk(clk_pix), .in(btn_fire), .out(), .ondn(), .onup(fire_l));
+    // debounce deb_left (.clk(clk_pix), .in(btn_left_i), .out(), .ondn(), .onup(left_l));
+    // debounce deb_up (.clk(clk_pix), .in(btn_up_i), .out(), .ondn(), .onup(up_l));
+    // debounce deb_down (.clk(clk_pix), .in(btn_down_i), .out(), .ondn(), .onup(down_l));
+    // debounce deb_right (.clk(clk_pix), .in(btn_right_i), .out(), .ondn(), .onup(right_l));
+    // assign fire_l = next_w;
     /* verilator lint_on PINCONNECTEMPTY */
 
     logic [2:0] arrow_left_l;

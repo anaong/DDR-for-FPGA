@@ -12,11 +12,11 @@ module chart #() (
     output wire [3:0] arrows_o,
     output wire [3:0] timing_o
     );
-
-    wire [6:0] rd_addr_w;
+    localparam WIDTH = 3;
+    wire [WIDTH-1:0] rd_addr_w;
 
     counter_up
-        #(.WIDTH_P(7))
+        #(.WIDTH_P(WIDTH))
     counter_up_chart
     (.clk_i(clk_i)
     ,.reset_i(1'b0)
