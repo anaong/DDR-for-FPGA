@@ -33,7 +33,7 @@ module top_ddr (
     logic clk_pix_locked;
     clock_480p clock_pix_inst (
        .clk_12m,
-       .rst(btn_rst & 1'b0),
+       .rst(1'b0),
        .clk_pix,
        .clk_pix_locked
     );
