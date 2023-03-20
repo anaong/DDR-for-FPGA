@@ -33,7 +33,7 @@ module top_ddr (
     logic clk_pix_locked;
     clock_480p clock_pix_inst (
        .clk_12m,
-       .rst(1'b0),
+       .rst(btn_rst),
        .clk_pix,
        .clk_pix_locked
     );
@@ -81,7 +81,7 @@ module top_ddr (
     debounce deb_up (.clk(clk_pix), .in(btn_fire), .out(), .ondn(), .onup(up_l));
     debounce deb_down (.clk(clk_pix), .in(btn_up), .out(), .ondn(), .onup(down_l));
     debounce deb_right (.clk(clk_pix), .in(btn_dn), .out(), .ondn(), .onup(right_l));
-    assign fire_l = left_l & up_l & down_l & right_l;
+    assign fire_l = btn_fire & btn_dn;
     /* verilator lint_off PINCONNECTEMPTY */
 
     //uncomment if using external buttons or pad
