@@ -76,7 +76,7 @@ iceprog ddr.bin
 **Controls**  
 There are 2 ways to play. You can use the buttons on the FPGA or use external buttons/a pad.  
 #### **FPGA**  
-UBUTTON - Left Arrow / Leftmost Square  
+UBUTTON - Reset  
 Button 1 - Up Arrow / Middle Left Square  
 Button 2 - Down Arrow / Middle Right Square  
 Button 3 - Right Arrow / Rightmost Square  
